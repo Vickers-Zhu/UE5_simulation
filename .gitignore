@@ -1,0 +1,87 @@
+# Unreal Engine 5 specific ignores
+###################
+Binaries/
+Intermediate/
+Saved/
+DerivedDataCache/
+*.autosave
+*.log
+*.bak
+*.dmp
+*.tmp
+*.uml
+*.umlcache
+*.ini
+*.uprojectdirs
+*.opensdf
+*.sdf
+*.opendb
+*.VC.db
+*.ini
+*.user
+*.userprefs
+*.vscode
+*.pidb
+*.pidb.meta
+*.vs/
+*.vsp
+*.vspscc
+*_PCLaunch.log
+*_DebugGame.log
+CrashReportClient/
+*.vssscc
+*.opensdf
+*.sdf
+*.opendb
+
+# macOS specific ignores
+###################
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Visual Studio Code directories
+###################
+.vscode/
+*.code-workspace
+
+# Node Modules
+###################
+node_modules/
+
+# Build Folders (uncomment the line below if you wish to keep your build folder)
+# !/Build/*
+
+# Ignore Unreal Engine 4 ini files that often contain sensitive information
+*.ini
+
+# Exclude Saved and Intermediate Build Files
+Saved/
+Intermediate/
+
+# Exclude Binary Files
+Binaries/
+
+Content/CommercialPlane/
+Content/StarterContent/
