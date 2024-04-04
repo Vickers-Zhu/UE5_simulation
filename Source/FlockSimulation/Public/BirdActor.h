@@ -31,13 +31,16 @@ protected:
 	// Unique identifier for the bird
 	int32 BirdId;
 
-	// Sphere component for visual representation
-	UPROPERTY(VisibleAnywhere, Category = "Components")
-	UStaticMeshComponent *SphereComponent;
+	// Mesh component
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent *MeshComponent;
 
-	// UNiagaraComponent *TrailEffect;
+	UPROPERTY(VisibleAnywhere, Category = "Materials")
+	UMaterialInstanceDynamic *DynamicMaterial;
 
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void SetWingRotationAngle(float Angle);
 };

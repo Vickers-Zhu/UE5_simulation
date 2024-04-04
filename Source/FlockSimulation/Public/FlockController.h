@@ -18,17 +18,22 @@ public:
 	// Frame number
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int32 FrameNumber;
-
 	// Position vector for this frame
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FVector Position;
+	// Velocity vector for this frame
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector Velocity;
+	// Wing rotation value for this frame (-1 to 1)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float WingRotation;
 
-	FFramePosition() : FrameNumber(0), Position(FVector::ZeroVector) {}
+	FFramePosition()
+		: FrameNumber(0), Position(FVector::ZeroVector), Velocity(FVector::ZeroVector), WingRotation(0.0f) {}
 
-	FFramePosition(int32 InFrameNumber, FVector InPosition)
-		: FrameNumber(InFrameNumber), Position(InPosition) {}
+	FFramePosition(int32 InFrameNumber, FVector InPosition, FVector InVelocity, float InWingRotation)
+		: FrameNumber(InFrameNumber), Position(InPosition), Velocity(InVelocity), WingRotation(InWingRotation) {}
 };
-
 UCLASS()
 class FLOCKSIMULATION_API AFlockController : public AActor
 {

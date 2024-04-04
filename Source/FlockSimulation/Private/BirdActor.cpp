@@ -7,41 +7,38 @@ ABirdActor::ABirdActor()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	// Create and set up the visual component as the root component
-	SphereComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisualRepresentation"));
-	// SphereComponent->SetWorldScale3D(FVector(0.1f, 0.1f, 0.1f));
-	RootComponent = SphereComponent;
 
-	// Set the static mesh to the basic sphere
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereVisualAsset(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
-	if (SphereVisualAsset.Succeeded())
+	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
+	RootComponent = MeshComponent;
+
+	// Assuming you have a mesh and a material instance in your project
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> Mesh(TEXT("/Game/BeefyBlackbirds/Meshes/Cowbirds/BrownHeadedCowbird/Mesh_BrownHeadedCowbird.Mesh_BrownHeadedCowbird"));
+	static ConstructorHelpers::FObjectFinder<UMaterialInstance> MaterialInstance(TEXT("/Game/BeefyBlackbirds/Meshes/Cowbirds/BrownHeadedCowbird/MI_BrownHeadedCowbird_Particle.MI_BrownHeadedCowbird_Particle"));
 	{
-		SphereComponent->SetStaticMesh(SphereVisualAsset.Object);
+		MeshComponent->SetStaticMesh(Mesh.Object);
+		MeshComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	}
+
+	if (MaterialInstance.Succeeded())
+	{
+		MeshComponent->SetMaterial(0, MaterialInstance.Object);
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Could not find the Sphere mesh!"));
 	}
-
-	// // Initialize the Niagara component
-	// TrailEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("TrailEffect"));
-	// TrailEffect->SetupAttachment(RootComponent);
-
-	// // Load and set the Niagara system for the trail effect
-	// static ConstructorHelpers::FObjectFinder<UNiagaraSystem> TrailSystem(TEXT("/Game/FX/Trail_beam.uasset"));
-	// if (TrailSystem.Succeeded())
-	// {
-	// 	TrailEffect->SetAsset(TrailSystem.Object);
-	// }
-
-	// // You can start with the effect disabled and enable it when needed
-	// TrailEffect->SetAutoActivate(false);
+	FVector NewScale(3.0f, 3.0f, 3.0f); // Example scale, adjust as needed
+	SetActorScale3D(NewScale);
 }
 
 // Called when the game starts or when spawned
 void ABirdActor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UMaterialInterface *Material = MeshComponent->GetMaterial(0);
+	DynamicMaterial = UMaterialInstanceDynamic::Create(Material, this);
+	MeshComponent->SetMaterial(0, DynamicMaterial);
 }
 
 // Called every frame
@@ -63,4 +60,12 @@ void ABirdActor::SetBirdId(int32 NewId)
 int32 ABirdActor::GetBirdId() const
 {
 	return BirdId;
+}
+
+void ABirdActor::SetWingRotationAngle(float Angle)
+{
+	if (DynamicMaterial)
+	{
+		DynamicMaterial->SetScalarParameterValue(FName("Wing Rotation Angle"), Angle);
+	}
 }

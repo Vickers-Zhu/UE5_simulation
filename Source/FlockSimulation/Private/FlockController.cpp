@@ -84,10 +84,13 @@ void AFlockController::LoadTrajectoryData(const FString &FileName)
 				int32 TrajectoryId = FCString::Atoi(*Columns[0]);
 				int32 Frame = FCString::Atoi(*Columns[1]);
 				FVector Position(FCString::Atof(*Columns[3]), FCString::Atof(*Columns[4]), FCString::Atof(*Columns[5]));
-				// UE_LOG(LogTemp, Warning, TEXT("TrajectoryId %d, Frame %d, Position %s"), TrajectoryId, Frame, *Position.ToString());
+				FVector Velocity(FCString::Atof(*Columns[6]), FCString::Atof(*Columns[7]), FCString::Atof(*Columns[8]));
+				UE_LOG(LogTemp, Warning, TEXT("Velocity: %s"), *Velocity.ToString());
+
+				float WingRotation = FCString::Atof(*Columns[11]);
 
 				// Add or append the position frame to the corresponding trajectory
-				TempBirdTrajectories.FindOrAdd(TrajectoryId).Emplace(Frame, Position);
+				TempBirdTrajectories.FindOrAdd(TrajectoryId).Emplace(Frame, Position, Velocity, WingRotation);
 			}
 		}
 
@@ -140,7 +143,27 @@ void AFlockController::UpdateBirdPositionsForFrame(int32 FrameNumber)
 				if (FramePosition)
 				{
 					BirdActor->UpdatePosition(FramePosition->Position * 100.0f);
-					GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Updated bird %d to position %s"), BirdActor->GetBirdId(), *FramePosition->Position.ToString()));
+					BirdActor->SetWingRotationAngle(FramePosition->WingRotation * 50.0f);
+
+					// Calculate the direction vector as the difference between velocity and position
+					FVector Direction = -FramePosition->Velocity;
+
+					// Normalize the direction vector to ensure it represents just the direction
+					Direction = Direction.GetSafeNormal();
+
+					if (!Direction.IsNearlyZero())
+					{
+						// Convert the direction vector into a rotation
+						FRotator NewRotation = Direction.Rotation();
+
+						// Set the bird actor's rotation to this new rotation
+						BirdActor->SetActorRotation(NewRotation);
+					}
+
+					if (GEngine)
+					{
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Updated bird %d to position %s with rotation %s"), BirdActor->GetBirdId(), *FramePosition->Position.ToString(), *BirdActor->GetActorRotation().ToString()));
+					}
 				}
 			}
 		}
