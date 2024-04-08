@@ -84,8 +84,8 @@ void AFlockController::LoadTrajectoryData(const FString &FileName)
 				int32 TrajectoryId = FCString::Atoi(*Columns[0]);
 				int32 Frame = FCString::Atoi(*Columns[1]);
 				FVector Position(FCString::Atof(*Columns[3]), FCString::Atof(*Columns[4]), FCString::Atof(*Columns[5]));
-				FVector Velocity(FCString::Atof(*Columns[6]), FCString::Atof(*Columns[7]), FCString::Atof(*Columns[8]));
-				UE_LOG(LogTemp, Warning, TEXT("Velocity: %s"), *Velocity.ToString());
+				FVector Velocity(FCString::Atof(*Columns[12]), FCString::Atof(*Columns[13]), FCString::Atof(*Columns[14]));
+				// UE_LOG(LogTemp, Warning, TEXT("Velocity: %s"), *Velocity.ToString());
 
 				float WingRotation = FCString::Atof(*Columns[11]);
 
@@ -146,7 +146,7 @@ void AFlockController::UpdateBirdPositionsForFrame(int32 FrameNumber)
 					BirdActor->SetWingRotationAngle(FramePosition->WingRotation * 50.0f);
 
 					// Calculate the direction vector as the difference between velocity and position
-					FVector Direction = -FramePosition->Velocity;
+					FVector Direction = FramePosition->Velocity;
 
 					// Normalize the direction vector to ensure it represents just the direction
 					Direction = Direction.GetSafeNormal();
